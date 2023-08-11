@@ -1,0 +1,111 @@
+
+<div class="border p-2 my-1">
+    <h5 class="main-page-announcements-title">{{enroltitle}}</h5>
+    <div class="row">
+        <div class="col">
+            <p class="p-0 text-primary">
+                 {{#str}}price, block_subscriptions {{/str}}
+                 {{#enrolcost}}
+                     <span class="text-accent font-weight-bold">{{enrolcost}}</span>
+                 {{/enrolcost}}
+                 {{^enrolcost}}
+                     <span class="text-accent font-weight-bold">
+                        {{#str}}nocost, block_subscriptions{{/str}}
+                     </span>
+                 {{/enrolcost}}
+            </p>
+            {{#enrolperiod}}
+                 <p class="p-0 text-primary">
+                    {{#str}}enrolperiod, block_subscriptions, {"period" :  {{#quote}}{{enrolperiod}}{{/quote}} }{{/str}}
+                    <span class="text-accent font-weight-bold">{{enrolperiod}}</span>
+                </p>
+                {{#enrolstartdate}}
+                <p class="p-0 text-primary">
+                    {{#str}}startdate, block_subscriptions{{/str}}
+                    <span class="text-accent font-weight-bold">
+                        {{#userdate}}{{enrolstartdate}}, {{#str}} strftimedate, core_langconfig {{/str}}{{/userdate}}
+                    </span>
+                </p>
+                {{/enrolstartdate}}
+                {{#enrolenddate}}
+                <p class="p-0 text-primary">
+                    {{#str}}enddate, block_subscriptions{{/str}}
+                    <span class="text-accent font-weight-bold">
+                         {{#userdate}}{{enrolenddate}}, {{#str}} strftimedate, core_langconfig {{/str}}{{/userdate}}
+                    </span>
+                </p>
+                {{/enrolenddate}}
+            {{/enrolperiod}}
+        </div>
+        <div class="col">
+            <p class="p-0 text-primary">
+                {{#str}}membershipcategories, block_subscriptions{{/str}}
+                <span class="text-accent font-weight-bold">{{formembershipcategories}}</span>
+            </p>
+            {{#isloggedin}}
+                {{#enrolledincourse}}
+                    {{#isenrolled}}
+                        <a class="btn btn-success disabled">
+                            {{#str}}alreadyenrolled, block_subscriptions{{/str}}
+                        </a>
+                        <a class="btn btn-outline-accent action-cancel-{{subscriptionid}}"
+                            href="{{{unenrollink}}}">
+                            {{#str}}cancelsubscription, block_subscriptions{{/str}}
+                        </a>
+                    {{/isenrolled}}
+                    {{^isenrolled}}
+                        <a class="btn btn-info disabled">
+                            {{#str}}alreadyenrolledother, block_subscriptions{{/str}}
+                        </a>
+                    {{/isenrolled}}
+                {{/enrolledincourse}}
+                {{^enrolledincourse}}
+                    {{#iscohortmember}}
+                        {{#gwpayments}}
+                            <button
+                                class="btn btn-secondary"
+                                type="button"
+                                id="gateways-modal-trigger-{{ uniqid }}"
+                                data-action="core_payment/triggerPayment"
+                                data-component="enrol_gwpayments"
+                                data-paymentarea="fee"
+                                data-itemid="{{enrolid}}"
+                                data-cost="{{enrolcost}}"
+                                data-successurl="{{successurl}}"
+                                data-description={{# quote }}{{description}}{{/ quote }}
+                            >
+                                {{# str }} sendpaymentbutton, enrol_gwpayments {{/ str }}
+                            </button>
+                        {{/gwpayments}}
+                        {{^gwpayments}}
+                            <a class="btn btn-primary action-subscribe-{{subscriptionid}}" href="{{{enrollink}}}">
+                                {{#str}}enrol, block_subscriptions, {{/str}}
+                            </a>
+                        {{/gwpayments}}
+                    {{/iscohortmember}}
+                    {{^iscohortmember}}
+                        <a class="btn btn-dark disabled">
+                            {{#str}}enrollmentunavailable, block_subscriptions, {{/str}}
+                        </a>
+                    {{/iscohortmember}}
+                {{/enrolledincourse}}
+            {{/isloggedin}}
+            {{^isloggedin}}
+                <a class="btn btn-dark disabled">
+                            {{#str}}notloggedin, block_subscriptions, {{/str}}
+                        </a>
+            {{/isloggedin}}
+        </div>
+    </div>
+</div>
+{{#isloggedin}}
+        {{^enrolledincourse}}
+            <a type="button" 
+                    class="btn btn btn-outline-danger" 
+                    data-toggle="tooltip" 
+                    data-placement="right" title="{{#str}}missingsubhelp, block_subscriptions{{/str}}"
+                    href={{subsupportlink}}>
+                    Missing Subscription?
+                    </a>
+        {{/enrolledincourse}}
+{{/isloggedin}}
