@@ -54,10 +54,8 @@ class block_subscriptions extends block_base {
 
         if (!empty($this->config->text)) {
             $this->content->text = $this->config->text;
-        } else {
-            $text = 'Please define the content text in /blocks/subscriptions/block_subscriptions.php.';
-            $this->content->text = $text;
         }
+        
         $renderable = new block_subscriptions\output\main($this);
         $renderer = $this->page->get_renderer('block_subscriptions');
 
