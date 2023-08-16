@@ -37,7 +37,6 @@ define(['jquery', 'core/str', 'core/modal_factory',
     var userEnrolId;
     var subscriptionId;
     var course;
-    var plugin;
     var modalObj;
     var spinner = '<p class="text-center">'
         + '<i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>'
@@ -64,11 +63,6 @@ define(['jquery', 'core/str', 'core/modal_factory',
                 modalObj.getRoot().on('click', '#id_submit', function(e) {
                     e.formredirect = true;
                     processModalForm(e);
-                });
-                modalObj.getRoot().on('click', '#id_submitbutton', function(e) {
-                    //e.preventDefault();
-                    e.formredirect = true;
-                    processModalForm2(e);
                 });
                 modalObj.getRoot().on('click', '#id_cancel', function(e) {
                     e.preventDefault();
@@ -98,7 +92,6 @@ define(['jquery', 'core/str', 'core/modal_factory',
                 'enrolid': enrolId,
                 'ueid' : userEnrolId,
             };
-            modalObj.setBody(spinner);
             Str.get_string('cancelsubscriptiontitle', 'block_subscriptions', course.shortname).then(function(title) {
                 modalObj.setTitle(title);
                 modalObj.setBody(Fragment.loadFragment('block_subscriptions', 'new_cancel_form', contextid, params));
@@ -107,71 +100,8 @@ define(['jquery', 'core/str', 'core/modal_factory',
                 Notification.exception(new Error('Failed to load string: copycoursetitle'));
             });
         }
-        else if (typeof enrolId !== "undefined" && typeof enrolId !== "undefined") {
-            var params = {
-                'jsonformdata': JSON.stringify(formdata),
-                'plugin' : plugin,
-                'enrolid' : enrolId
-            };
-            modalObj.setBody(spinner);
-            Str.get_string('subscribetitle', 'block_subscriptions', course.shortname).then(function(title) {
-                modalObj.setTitle(title);
-                modalObj.setBody(Fragment.loadFragment('block_subscriptions', 'new_enrol_form', contextid, params));
-                return;
-            }).catch(function() {
-                Notification.exception(new Error('Failed to load string: copycoursetitle'));
-            });
-        }
     }
 
-    /**
-     * Updates Moodle form with selected information.
-     *
-     * @param {Object} e
-     * @private
-     */
-    function processModalForm2(e) {
-        e.preventDefault(); // Stop modal from closing.
-        console.log('herer');
-        // Form data.
-        var cancelform = modalObj.getRoot().find('form').serialize();
-        //var formjson = JSON.stringify(cancelform);
-
-        // Handle invalid form fields for better UX.
-        var invalid = $.merge(
-                modalObj.getRoot().find('[aria-invalid="true"]'),
-                modalObj.getRoot().find('.error')
-        );
-
-        if (invalid.length) {
-            invalid.first().focus();
-            return;
-        }
-
-        // Submit form via ajax.
-        ajax.call([{
-            methodname: 'block_subscriptions_submit_user_enrolment_form',
-            args: {
-                formdata: cancelform
-            },
-        }])[0].done(function(response) {
-            // For submission succeeded.
-            var result = response;
-            console.log(response.result);
-            if(result.result){
-                modalObj.setBody(spinner);
-                modalObj.hide();
-                window.location.reload();
-            }
-            else{
-                updateModalBody(cancelform);
-            }
-        }).fail(function(fail){
-            console.log(fail);
-            // Form submission failed server side, redisplay with errors.
-            updateModalBody(cancelform);
-        });
-    }
 
     /**
      * Updates Moodle form with selected information.
@@ -193,7 +123,6 @@ define(['jquery', 'core/str', 'core/modal_factory',
         );
         const confirmValue = formData.find(item => item.name === 'confirm').value;
         const confirmationStringValue = formData.find(item => item.name === 'confirmationphrase').value;
-        console.log(confirmValue, confirmationStringValue);
         if (confirmValue !== confirmationStringValue) {
             updateModalBody(cancelform);
             return;
@@ -214,7 +143,6 @@ define(['jquery', 'core/str', 'core/modal_factory',
             // For submission succeeded.
             modalObj.setBody(spinner);
             modalObj.hide();
-            console.log(course.shortname);
             ajax.call([{
                 methodname: 'block_subscriptions_notify',
                 args:{
@@ -246,6 +174,7 @@ define(['jquery', 'core/str', 'core/modal_factory',
         createModal();
         // Setup the click handlers on the copy buttons.
         $('.action-cancel-' + subscriptionId).on('click', function(e) {
+            modalObj.setBody(spinner);
             e.preventDefault(); // Stop. Hammer time.
             let url = new URL(this.getAttribute('href'));
             let params = new URLSearchParams(url.search);
@@ -271,33 +200,6 @@ define(['jquery', 'core/str', 'core/modal_factory',
             }
             modalObj.show();
         });
-        $('.action-subscribe-' + subscriptionId).on('click', function(e) {
-            e.preventDefault(); // Stop. Hammer time.
-            let url = new URL(this.getAttribute('href'));
-            let params = new URLSearchParams(url.search);
-            enrolId = params.get('enrolid');
-            plugin = params.get('plugin');
-            let courseId = params.get('courseid');
-            if(courseId !== null){
-                ajax.call([{ // Get the course information.
-                    methodname: 'core_course_get_courses',
-                    args: {
-                        'options': {'ids': [courseId]},
-                    },
-                }])[0].done(function(response) {
-                    // We have the course info get the modal content.
-                    course = response[0];
-                    updateModalBody();
-                }).fail(function() {
-                    Notification.exception(new Error('Failed to load course'));
-                });
-            }
-            else{
-                updateModalBody();
-            }
-            modalObj.show();
-        });
-
     };
 
     return CancelModal;

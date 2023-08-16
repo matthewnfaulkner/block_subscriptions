@@ -63,3 +63,4 @@ $string['startdate'] = 'Subscription Started:';
 $string['enddate'] = 'Subscription Ends:';
 $string['mysubscriptionstitle'] = 'My Active Subscriptions';
 $string['subscriptionstitle'] = 'Subscriptions';
+$string['subscribetitle'] = 'Subscribe to: {$a}';

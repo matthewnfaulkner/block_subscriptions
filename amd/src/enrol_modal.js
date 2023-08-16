@@ -37,8 +37,8 @@ define(['jquery', 'core/str', 'core/modal_factory',
     var plugin;
     var subscriptionId;
     var course;
-    var enrol;
     var modalObj;
+    var plugin;
     var spinner = '<p class="text-center">'
         + '<i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>'
         + '</p>';
@@ -49,23 +49,33 @@ define(['jquery', 'core/str', 'core/modal_factory',
      * @private
      */
     function createModal() {
-        // Get the Title String.
-        Str.get_string('loading').then(function(title) {
-            // Create the Modal.
-            ModalFactory.create({
-                type: ModalFactory.types.DEFAULT,
-                title: title,
-                body: spinner,
-                large: true
-            })
-            .done(function(modal) {
-                modalObj = modal;
-                // Explicitly handle form click events.
+       // Get the Title String.
+       Str.get_string('loading').then(function(title) {
+        // Create the Modal.
+        ModalFactory.create({
+            type: ModalFactory.types.DEFAULT,
+            title: title,
+            body: spinner,
+            large: true
+        })
+        .done(function(modal) {
+            modalObj = modal;
+            // Explicitly handle form click events.
+            modalObj.getRoot().on('click', '#id_submitbutton', function(e) {
+                //e.preventDefault();
+                e.formredirect = true;
+                processModalForm(e);
             });
-            return;
-        }).catch(function() {
-            Notification.exception(new Error('Failed to load string: loading'));
+            modalObj.getRoot().on('click', '#id_cancel', function(e) {
+                e.preventDefault();
+                modalObj.setBody(spinner);
+                modalObj.hide();
+            });
         });
+        return;
+    }).catch(function() {
+        Notification.exception(new Error('Failed to load string: loading'));
+    });
     }
 
     /**
@@ -78,11 +88,11 @@ define(['jquery', 'core/str', 'core/modal_factory',
         if (typeof formdata === "undefined") {
             formdata = {};
         }
-        if (typeof enrolId !== "undefined"){
+        if (typeof enrolId !== "undefined" && typeof enrolId !== "undefined") {
             var params = {
                 'jsonformdata': JSON.stringify(formdata),
                 'plugin' : plugin,
-                'enrolId' : enrolId
+                'enrolid' : enrolId
             };
             modalObj.setBody(spinner);
             Str.get_string('subscribetitle', 'block_subscriptions', course.shortname).then(function(title) {
@@ -96,57 +106,54 @@ define(['jquery', 'core/str', 'core/modal_factory',
 
     }
 
-    /**
+   /**
      * Updates Moodle form with selected information.
      *
      * @param {Object} e
      * @private
      */
-    function processModalForm(e) {
-        e.preventDefault(); // Stop modal from closing.
+   function processModalForm(e) {
+    e.preventDefault(); // Stop modal from closing.
+    console.log('herer');
+    // Form data.
+    var cancelform = modalObj.getRoot().find('form').serialize();
+    //var formjson = JSON.stringify(cancelform);
 
-        // Form data.
-        var cancelform = modalObj.getRoot().find('form').serialize();
-        //var formjson = JSON.stringify(cancelform);
+    // Handle invalid form fields for better UX.
+    var invalid = $.merge(
+            modalObj.getRoot().find('[aria-invalid="true"]'),
+            modalObj.getRoot().find('.error')
+    );
 
-        var ueid = modalObj.getRoot().find('input[name="ueid"]').val();
-        // Handle invalid form fields for better UX.
-        var invalid = $.merge(
-                modalObj.getRoot().find('[aria-invalid="true"]'),
-                modalObj.getRoot().find('.error')
-        );
+    if (invalid.length) {
+        invalid.first().focus();
+        return;
+    }
 
-        if (invalid.length) {
-            invalid.first().focus();
-            return;
-        }
-        // Submit form via ajax.
-        ajax.call([{
-            methodname: 'core_enrol_enrol_user_enrolment',
-            args: {
-                ueid: ueid
-            },
-        }])[0].done(function() {
-            // For submission succeeded.
+    // Submit form via ajax.
+    ajax.call([{
+        methodname: 'block_subscriptions_submit_user_enrolment_form',
+        args: {
+            formdata: cancelform
+        },
+    }])[0].done(function(response) {
+        // For submission succeeded.
+        var result = response;
+        console.log(response.result);
+        if(result.result){
             modalObj.setBody(spinner);
             modalObj.hide();
-            console.log(course.shortname);
-            ajax.call([{
-                methodname: 'block_subscriptions_notify',
-                args:{
-                    cancelled: true,
-                    coursename: course.shortname
-                }
-            }])[0].done(function(){
-                window.location.reload();
-            }).fail(function(fail){
-                console.log(fail);
-            });
-        }).fail(function(){
-            // Form submission failed server side, redisplay with errors.
+            window.location.reload();
+        }
+        else{
             updateModalBody(cancelform);
-        });
-    }
+        }
+    }).fail(function(fail){
+        console.log(fail);
+        // Form submission failed server side, redisplay with errors.
+        updateModalBody(cancelform);
+    });
+}
     /**
      * Initialise the class.
      *
@@ -161,13 +168,14 @@ define(['jquery', 'core/str', 'core/modal_factory',
         // Setup the initial Modal.
         createModal();
         // Setup the click handlers on the copy buttons.
-        $('.action-cancel-' + subscriptionId).on('click', function(e) {
+        $('.action-subscribe-' + subscriptionId).on('click', function(e) {
+            modalObj.setBody(spinner);
             e.preventDefault(); // Stop. Hammer time.
             let url = new URL(this.getAttribute('href'));
             let params = new URLSearchParams(url.search);
             enrolId = params.get('enrolid');
             plugin = params.get('plugin');
-            let courseId = params.get('courseid');
+            let courseId = params.get('id');
             if(courseId !== null){
                 ajax.call([{ // Get the course information.
                     methodname: 'core_course_get_courses',

@@ -99,7 +99,7 @@ class subscription_list_item implements \renderable, \templatable {
         $enrollink = new moodle_url('/enrol/index.php', array(  
                                             'enrolid' => $this->enrol->id, 
                                             'plugin' => $plugin->get_name(),
-                                            'courseid' => $this->enrol->courseid
+                                            'id' => $this->enrol->courseid
                                         )
                                     );
         if($unenrollink = $plugin->get_unenrolself_link($this->enrol)){
