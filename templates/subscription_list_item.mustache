@@ -50,10 +50,12 @@
                         <a class="btn btn-success disabled">
                             {{#str}}alreadyenrolled, block_subscriptions{{/str}}
                         </a>
-                        <a class="btn btn-outline-accent action-cancel-{{subscriptionid}}"
-                            href="{{{unenrollink}}}">
-                            {{#str}}cancelsubscription, block_subscriptions{{/str}}
-                        </a>
+                        {{#unenrollink}}
+                            <a class="btn btn-outline-accent action-cancel-{{subscriptionid}}"
+                                href="{{{unenrollink}}}">
+                                {{#str}}cancelsubscription, block_subscriptions{{/str}}
+                            </a>
+                        {{/unenrollink}}
                     {{/isenrolled}}
                     {{^isenrolled}}
                         <a class="btn btn-info disabled">
@@ -78,6 +80,16 @@
                             >
                                 {{# str }} sendpaymentbutton, enrol_gwpayments {{/ str }}
                             </button>
+                            {{#js}}
+                                {{#enablecoupon}}
+                                require(['enrol_gwpayments/module'], function(module) {
+                                    module.init();
+                                });
+                                {{/enablecoupon}}
+                                require(['core_payment/gateways_modal'], function(modal) {
+                                    modal.init();
+                                });
+                            {{/js}}
                         {{/gwpayments}}
                         {{^gwpayments}}
                             <a class="btn btn-primary action-subscribe-{{subscriptionid}}" href="{{{enrollink}}}">
