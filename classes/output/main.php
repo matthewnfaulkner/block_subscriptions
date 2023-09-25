@@ -94,6 +94,7 @@ class main implements renderable, templatable{
         if($subpage == "my"){
             if($enrollist = block_subscriptions_get_user_subscriptions($this->userid, $this->course)){
                 $this->enrolledincourse = true;
+                $template['memberdetails'] = local_subscriptions_get_membership_number_from_course($this->course, $this->userid);
             };
         }
         else if($this->course && $this->userid){
