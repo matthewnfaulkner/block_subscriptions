@@ -100,6 +100,7 @@ class main implements renderable, templatable{
             if($enrollist = block_subscriptions_course_get_subscriptions_for_user($this->course, $this->userid, true)){
                 if(reset($enrollist)->userenrolled !== NULL){
                     $this->enrolledincourse = true;
+                    $template['memberdetails'] = local_subscriptions_get_membership_number_from_course($this->course, $this->userid);
                 }
             };
             
