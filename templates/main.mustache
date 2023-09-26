@@ -4,3 +4,14 @@
 {{#enrollist}}
 {{>block_subscriptions/subscription_list_item}}
 {{/enrollist}}
+{{#isloggedin}}
+        {{^enrolledincourse}}
+            <a type="button" 
+                    class="btn btn btn-outline-danger" 
+                    data-toggle="tooltip" 
+                    data-placement="right" title="{{#str}}missingsubhelp, block_subscriptions{{/str}}"
+                    href={{subsupportlink}}>
+                    Missing Subscription?
+                    </a>
+        {{/enrolledincourse}}
+{{/isloggedin}}

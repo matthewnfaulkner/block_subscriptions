@@ -55,6 +55,8 @@ class subscription_list_item implements \renderable, \templatable {
 
         $plugin = enrol_get_plugin($this->enrol->enrol);
 
+        $data->enroltitle = $plugin->get_instance_name($this->enrol);
+
         $enrolurl = new \moodle_url('/enrol/index.php', array('id' => $this->enrol->courseid));
         if($this->enrol->enrol == 'cohort'){
             $cohortid = $this->enrol->customint1;
@@ -63,19 +65,15 @@ class subscription_list_item implements \renderable, \templatable {
             $data->enrolid = $this->enrol->id;
             $data->successurl = service_provider::get_success_url('gwpayments', $this->enrol->id)->out(false);
             $data->gwpayments = true;
-            $data->description = get_string('purchasedescription', 'enrol_gwpayments');
+            $data->description = get_string('purchasedescription', 'enrol_gwpayments', $data->enroltitle);
         }else{
             $cohortid = null;
         }
         $formembershipcategories = get_membership_categories_from_cohort($cohortid);
-        if(!$this->enrol->name){
-            $this->enrol->name = $this->enrol->enrol;
-        }
-        
+
         if($this->loggedin){
             if($cohortid){
                 $iscohortmember = cohort_is_member($cohortid, $USER->id);
-                $this->enrol->userenrolled = 0;
             }else{
                 $iscohortmember = true;
             }
@@ -108,8 +106,6 @@ class subscription_list_item implements \renderable, \templatable {
                               'courseid' => $this->enrol->courseid));
         }
         
-
-        $data->enroltitle = $this->enrol->name;
         
         $data->enrolcost = $this->enrol->cost ? \core_payment\helper::get_cost_as_string($this->enrol->cost ,$this->enrol->currency) : null;
         $data->enrolhascost = $hascost;

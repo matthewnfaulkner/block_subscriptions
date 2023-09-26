@@ -64,44 +64,51 @@
                     {{/isenrolled}}
                 {{/enrolledincourse}}
                 {{^enrolledincourse}}
-                    {{#iscohortmember}}
-                        {{#gwpayments}}
-                            <button
-                                class="btn btn-secondary"
-                                type="button"
-                                id="gateways-modal-trigger-{{ uniqid }}"
-                                data-action="core_payment/triggerPayment"
-                                data-component="enrol_gwpayments"
-                                data-paymentarea="fee"
-                                data-itemid="{{enrolid}}"
-                                data-cost="{{enrolcost}}"
-                                data-successurl="{{successurl}}"
-                                data-description={{# quote }}{{description}}{{/ quote }}
-                            >
-                                {{# str }} sendpaymentbutton, enrol_gwpayments {{/ str }}
-                            </button>
-                            {{#js}}
-                                {{#enablecoupon}}
-                                require(['enrol_gwpayments/module'], function(module) {
-                                    module.init();
-                                });
-                                {{/enablecoupon}}
-                                require(['core_payment/gateways_modal'], function(modal) {
-                                    modal.init();
-                                });
-                            {{/js}}
-                        {{/gwpayments}}
-                        {{^gwpayments}}
-                            <a class="btn btn-primary action-subscribe-{{subscriptionid}}" href="{{{enrollink}}}">
-                                {{#str}}enrol, block_subscriptions, {{/str}}
+                    {{#hasmainsubscription}}
+                        {{#iscohortmember}}
+                            {{#gwpayments}}
+                                <button
+                                    class="btn btn-secondary"
+                                    type="button"
+                                    id="gateways-modal-trigger-{{ uniqid }}"
+                                    data-action="core_payment/triggerPayment"
+                                    data-component="enrol_gwpayments"
+                                    data-paymentarea="fee"
+                                    data-itemid="{{enrolid}}"
+                                    data-cost="{{enrolcost}}"
+                                    data-successurl="{{successurl}}"
+                                    data-description={{# quote }}{{description}}{{/ quote }}
+                                >
+                                    {{# str }} sendpaymentbutton, enrol_gwpayments {{/ str }}
+                                </button>
+                                {{#js}}
+                                    {{#enablecoupon}}
+                                    require(['enrol_gwpayments/module'], function(module) {
+                                        module.init();
+                                    });
+                                    {{/enablecoupon}}
+                                    require(['core_payment/gateways_modal'], function(modal) {
+                                        modal.init();
+                                    });
+                                {{/js}}
+                            {{/gwpayments}}
+                            {{^gwpayments}}
+                                <a class="btn btn-primary action-subscribe-{{subscriptionid}}" href="{{{enrollink}}}">
+                                    {{#str}}enrol, block_subscriptions, {{/str}}
+                                </a>
+                            {{/gwpayments}}
+                        {{/iscohortmember}}
+                        {{^iscohortmember}}
+                            <a class="btn btn-dark disabled">
+                                {{#str}}enrollmentunavailable, block_subscriptions, {{/str}}
                             </a>
-                        {{/gwpayments}}
-                    {{/iscohortmember}}
-                    {{^iscohortmember}}
+                        {{/iscohortmember}}
+                    {{/hasmainsubscription}}
+                    {{^hasmainsubscription}}
                         <a class="btn btn-dark disabled">
-                            {{#str}}enrollmentunavailable, block_subscriptions, {{/str}}
+                                {{#str}}enrollmentunavailablenomain, block_subscriptions, {{/str}}
                         </a>
-                    {{/iscohortmember}}
+                    {{/hasmainsubscription}}
                 {{/enrolledincourse}}
             {{/isloggedin}}
             {{^isloggedin}}
@@ -112,14 +119,4 @@
         </div>
     </div>
 </div>
-{{#isloggedin}}
-        {{^enrolledincourse}}
-            <a type="button" 
-                    class="btn btn btn-outline-danger" 
-                    data-toggle="tooltip" 
-                    data-placement="right" title="{{#str}}missingsubhelp, block_subscriptions{{/str}}"
-                    href={{subsupportlink}}>
-                    Missing Subscription?
-                    </a>
-        {{/enrolledincourse}}
-{{/isloggedin}}
+

@@ -64,3 +64,4 @@ $string['enddate'] = 'Subscription Ends:';
 $string['mysubscriptionstitle'] = 'My Active Subscriptions';
 $string['subscriptionstitle'] = 'Subscriptions';
 $string['subscribetitle'] = 'Subscribe to: {$a}';
+$string['enrollmentunavailablenomain'] = 'You need to subscribe to APOA first.';

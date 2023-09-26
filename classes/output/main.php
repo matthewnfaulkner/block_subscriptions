@@ -91,6 +91,13 @@ class main implements renderable, templatable{
         
         $template['subsupportlink'] = new moodle_url($CFG->wwwroot . '/local/subscriptions/contactsitesupport.php', array('courseid' => $this->course));
         $subpage = $PAGE->subpage;
+
+
+        if(local_subscriptions_is_main_subscription($this->course)){
+            $template['hasmainsubscription'] = true;
+        }else {
+            $template['hasmainsubscription'] = local_subscriptions_has_main_subscription($this->userid);
+        }
         if($subpage == "my"){
             if($enrollist = block_subscriptions_get_user_subscriptions($this->userid, $this->course)){
                 $this->enrolledincourse = true;
@@ -109,8 +116,9 @@ class main implements renderable, templatable{
         else if ($this->course){
             $enrollist = block_subscriptions_course_get_subscriptions($this->course);
         }
+        
         foreach ($enrollist as $enrol){
-            $enrollistitem = new subscription_list_item($enrol, $this->enrolledincourse, $this->loggedin);
+            $enrollistitem = new subscription_list_item($enrol, $this->enrolledincourse, $this->loggedin, $ismainsubscription);
             $template['enrollist'][] = $enrollistitem->export_for_template($output);
         }
         return $template;
