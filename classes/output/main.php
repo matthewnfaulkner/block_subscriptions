@@ -101,14 +101,14 @@ class main implements renderable, templatable{
         if($subpage == "my"){
             if($enrollist = block_subscriptions_get_user_subscriptions($this->userid, $this->course)){
                 $this->enrolledincourse = true;
-                $template['memberdetails'] = local_subscriptions_get_membership_number_from_course($this->course, $this->userid);
+                $template['memberdetails'] = local_subscriptions_get_membership_number_from_course($this->course);
             };
         }
         else if($this->course && $this->userid){
             if($enrollist = block_subscriptions_course_get_subscriptions_for_user($this->course, $this->userid, true)){
                 if(reset($enrollist)->userenrolled !== NULL){
                     $this->enrolledincourse = true;
-                    $template['memberdetails'] = local_subscriptions_get_membership_number_from_course($this->course, $this->userid);
+                    $template['memberdetails'] = local_subscriptions_get_membership_number_from_course($this->course);
                 }
             };
             
