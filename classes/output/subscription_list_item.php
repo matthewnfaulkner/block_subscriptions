@@ -39,12 +39,15 @@ class subscription_list_item implements \renderable, \templatable {
 
     private bool $loggedin;
 
+    private int $enrolmentend;
+
     protected \core_course_list_element $courselistelement;
 
-    public function __construct(\stdClass $enrol, bool $enrolledincourse, bool $loggedin) {
+    public function __construct(\stdClass $enrol, bool &$enrolledincourse, bool $loggedin, int $enrolmentend) {
         $this->enrol = $enrol;
-        $this->enrolledincourse = $enrolledincourse;
+        $this->enrolledincourse = &$enrolledincourse;
         $this->loggedin = $loggedin;
+        $this->enrolmentend = $enrolmentend;
     }
 
  
@@ -55,9 +58,11 @@ class subscription_list_item implements \renderable, \templatable {
 
         $plugin = enrol_get_plugin($this->enrol->enrol);
 
-        $data->enroltitle = $plugin->get_instance_name($this->enrol);
+        $canselfenrol = $plugin->show_enrolme_link($this->enrol);
 
+        $data->enroltitle = $plugin->get_instance_name($this->enrol);
         $enrolurl = new \moodle_url('/enrol/index.php', array('id' => $this->enrol->courseid));
+
         if($this->enrol->enrol == 'cohort'){
             $cohortid = $this->enrol->customint1;
         }else if($this->enrol->enrol == 'gwpayments'){
@@ -92,7 +97,7 @@ class subscription_list_item implements \renderable, \templatable {
         else{
             $formattedperiod = get_enrol_period($this->enrol->enrolperiod);
         }
-        $isenrolled = $this->enrol->userenrolled !== null;
+        
         
         $enrollink = new moodle_url('/enrol/index.php', array(  
                                             'enrolid' => $this->enrol->id, 
@@ -100,19 +105,47 @@ class subscription_list_item implements \renderable, \templatable {
                                             'id' => $this->enrol->courseid
                                         )
                                     );
+                                    
         if($unenrollink = $plugin->get_unenrolself_link($this->enrol)){
             $unenrollink->params(
                         array('ueid' => $this->enrol->ueid,
                               'courseid' => $this->enrol->courseid));
         }
+
+        if($isenrolled = $this->enrol->userenrolled === (string)ENROL_USER_ACTIVE){
+                $currentdate = new \DateTime();
+                $now = $currentdate->getTimestamp();
+                $isexpired = $this->enrol->timestart > $now || ( $this->enrol->timeend > 0 &&  $this->enrol->timeend < $now);
+
+                if($this->enrol->timeend) {
+                    $canresubscribe = true;
+                }
+
+                if(!$isexpired){
+                    $this->enrolledincourse = true;
+                }
+                // If user enrolment status has not yet started/already ended or the enrolment instance is disabled.
+        }
+
+        if($this->enrolledincourse) {
+            if($this->enrolmentend){
+                if($this->enrol->timeend < $this->enrolmentend){
+                    $canupgrade = true;
+                }else if ($this->enrol->timeend < $this->enrolmentend){
+                    $isenrolled = false;
+                }
+            }else{
+                $isenrolled = $this->enrol->timeend == 0 && $isenrolled;
+            }
+        }
         
         
         $data->enrolcost = $this->enrol->cost ? \core_payment\helper::get_cost_as_string($this->enrol->cost ,$this->enrol->currency) : null;
+        $data->isexpired = $isexpired;
         $data->enrolhascost = $hascost;
         $data->enrolperiod = $formattedperiod;
         $data->enrolurl = $enrolurl;
         $data->enrolfor = $enrolfor;
-        $data->enrolledincourse = $this->enrolledincourse;
         $data->isenrolled = $isenrolled;
         $data->formembershipcategories = $formembershipcategories;
         $data->iscohortmember = $iscohortmember;
@@ -125,7 +158,9 @@ class subscription_list_item implements \renderable, \templatable {
         $data->localisedcost = format_float($this->enrol->cost, 2, true);
         $data->locale = $USER->lang;
         $data->enablecoupon = (int)$this->enrol->customint2;
-
+        $data->canresubscribe = $canresubscribe;
+        $data->canselfenrol = $canselfenrol;
+        $data->canupgrade = $canupgrade;
         return $data;
     }
     

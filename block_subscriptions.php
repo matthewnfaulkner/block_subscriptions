@@ -64,7 +64,7 @@ class block_subscriptions extends block_base {
         $this->content->text = $renderer->render($renderable);
 
         $this->page->requires->js_call_amd('block_subscriptions/cancel_modal', 'init', array(1, $this->instance->id));
-        $this->page->requires->js_call_amd('block_subscriptions/enrol_modal', 'init', array(1, $this->instance->id));
+        //$this->page->requires->js_call_amd('block_subscriptions/enrol_modal', 'init', array(1, $this->instance->id));
         return $this->content;
     }
 

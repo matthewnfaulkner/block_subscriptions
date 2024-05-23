@@ -100,14 +100,12 @@ class main implements renderable, templatable{
         }
         if($subpage == "my"){
             if($enrollist = block_subscriptions_get_user_subscriptions($this->userid, $this->course)){
-                $this->enrolledincourse = true;
                 $template['memberdetails'] = local_subscriptions_get_membership_number_from_course($this->course);
             };
         }
         else if($this->course && $this->userid){
             if($enrollist = block_subscriptions_course_get_subscriptions_for_user($this->course, $this->userid, true)){
                 if(reset($enrollist)->userenrolled !== NULL){
-                    $this->enrolledincourse = true;
                     $template['memberdetails'] = local_subscriptions_get_membership_number_from_course($this->course);
                 }
             };
@@ -117,10 +115,15 @@ class main implements renderable, templatable{
             $enrollist = block_subscriptions_course_get_subscriptions($this->course);
         }
         
+        $enrolmentend = enrol_get_enrolment_end($this->course, $this->userid);
+
         foreach ($enrollist as $enrol){
-            $enrollistitem = new subscription_list_item($enrol, $this->enrolledincourse, $this->loggedin, $ismainsubscription);
+            $enrollistitem = new subscription_list_item($enrol, $this->enrolledincourse, $this->loggedin, $enrolmentend);
             $template['enrollist'][] = $enrollistitem->export_for_template($output);
         }
+
+        $template['enrolledincourse'] = $this->enrolledincourse;
+
         return $template;
     }
 }

@@ -65,3 +65,6 @@ $string['mysubscriptionstitle'] = 'My Active Subscriptions';
 $string['subscriptionstitle'] = 'Subscriptions';
 $string['subscribetitle'] = 'Subscribe to: {$a}';
 $string['enrollmentunavailablenomain'] = 'You need to subscribe to APOA first.';
+$string['expired'] = 'Expired on {$a}';
+$string['renewsubscription'] = "Renew Subscription";
+$string['upgradesubscription'] = "Upgrade Subscription";

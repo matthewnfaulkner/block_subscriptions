@@ -1,0 +1,56 @@
+{{#hasmainsubscription}}
+    {{#iscohortmember}}
+        {{#gwpayments}}
+            <button
+                class="btn btn-secondary"
+                type="button"
+                id="gateways-modal-trigger-{{ uniqid }}"
+                data-action="core_payment/triggerPayment"
+                data-component="enrol_gwpayments"
+                data-paymentarea="fee"
+                data-itemid="{{enrolid}}"
+                data-cost="{{enrolcost}}"
+                data-successurl="{{successurl}}"
+                data-description={{# quote }}{{description}}{{/ quote }}
+            >   
+                {{#enrolledincourse}}
+                    {{#canupgrade}}{{# str }} upgradesubscription, block_subscriptions {{/ str }}{{/canupgrade}}
+                    {{^isexpired}}
+                        {{#canresubscribe}}
+                            {{# str }} renewsubscription, block_subscriptions {{/ str }}
+                        {{/canresubscribe}}
+                    {{/isexpired}}
+                    {{#isexpired}}{{# str }} sendpaymentbutton, enrol_gwpayments {{/ str }}{{/isexpired}}
+                {{/enrolledincourse}}
+                {{^enrolledincourse}}
+                    {{# str }} sendpaymentbutton, enrol_gwpayments {{/ str }}
+                {{/enrolledincourse}}
+            </button>
+            {{#js}}
+                {{#enablecoupon}}
+                require(['enrol_gwpayments/module'], function(module) {
+                    module.init();
+                });
+                {{/enablecoupon}}
+                require(['core_payment/gateways_modal'], function(modal) {
+                    modal.init();
+                });
+            {{/js}}
+        {{/gwpayments}}
+        {{^gwpayments}}
+            <a class="btn btn-primary action-subscribe-{{subscriptionid}}" href="{{{enrollink}}}">
+                {{#str}}enrol, block_subscriptions, {{/str}}
+            </a>
+        {{/gwpayments}}
+    {{/iscohortmember}}
+    {{^iscohortmember}}
+        <a class="btn btn-dark disabled">
+            {{#str}}enrollmentunavailable, block_subscriptions, {{/str}}
+        </a>
+    {{/iscohortmember}}
+{{/hasmainsubscription}}
+{{^hasmainsubscription}}
+    <a class="btn btn-dark disabled">
+            {{#str}}enrollmentunavailablenomain, block_subscriptions, {{/str}}
+    </a>
+{{/hasmainsubscription}}

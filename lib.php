@@ -14,11 +14,12 @@ function block_subscriptions_get_user_subscriptions($userid, $courseid){
             FROM {enrol} e
             INNER JOIN {user_enrolments} ue on e.id = ue.enrolid
             AND ue.userid = :userid AND ue.status = :active
-            AND e.courseid = :courseid";
+            AND e.courseid = :courseid
+            ORDER BY ue.timeend ASC";
 
 
         $params = array('userid' => $userid,
-                        'active' => 0,
+                        'active' => ENROL_USER_ACTIVE,
                         'courseid' => $courseid);
 
         $subscriptions = $DB->get_records_sql($sql, $params);
@@ -49,13 +50,13 @@ function block_subscriptions_course_get_subscriptions_for_user($courseid, $useri
     list($pluginssql, $params) = $DB->get_in_or_equal(array_keys($enrolplugins), SQL_PARAMS_NAMED);
     if($onlyactive){
         $onlyactivewhere = "uee.userid = :userid AND uee.status = :active";
-        $params['active'] = 0;
+        $params['active'] = ENROL_USER_ACTIVE;
         $params['userid'] = $userid;
     }
     $sql = "SELECT e.*, ue.status as userenrolled, ue.timestart, ue.timeend, ue.id as ueid
     FROM {enrol} e
     LEFT JOIN 
-    (SELECT uee.* FROM {user_enrolments} uee WHERE $onlyactivewhere) AS ue ON e.id = ue.enrolid 
+    (SELECT uee.* FROM {user_enrolments} uee WHERE $onlyactivewhere ORDER BY uee.timeend DESC) AS ue ON e.id = ue.enrolid 
     WHERE e.courseid = :courseid 
     AND (e.enrol $pluginssql OR (e.enrol = :manualenrol AND ue.status IS NOT NULL))
     AND e.status = :enrolactive
