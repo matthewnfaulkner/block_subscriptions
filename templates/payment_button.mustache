@@ -1,0 +1,14 @@
+<button
+    class="btn btn-secondary my-1"
+    type="button"
+    id="gateways-modal-trigger-{{ uniqid }}"
+    data-action="core_payment/triggerPayment"
+    data-component="enrol_gwpayments"
+    data-paymentarea="fee"
+    data-itemid="{{enrolid}}"
+    data-cost="{{enrolcost}}"
+    data-successurl="{{successurl}}"
+    data-description={{# quote }}{{description}}{{/ quote }}
+    >   
+    {{$label}}Pay Now{{/label}}
+</button>

@@ -164,12 +164,13 @@ class subscription_list_item implements \renderable, \templatable {
         $data->canresubscribe = $canresubscribe;
         $data->canselfenrol = $canselfenrol;
         $data->canupgrade = $canupgrade;
-        $data->itemid = 1;
+        $data->itemid = $data->enrolid;
+
         $data->componentname = 'local_subscriptions';
-        $data->area = 'main';
-        $data->price = '100';
+        $data->area = 'option';
+        $data->price = $data->enrolcost;
         $data->expirationdate = $this->enrol->timeend;
-        $data->itemname = 'sakahjdadh';
+        $data->itemname = $data->enroltitle;
         
         return $data;
     }
