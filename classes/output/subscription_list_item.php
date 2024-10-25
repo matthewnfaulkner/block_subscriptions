@@ -65,6 +65,9 @@ class subscription_list_item implements \renderable, \templatable {
 
         if($this->enrol->enrol == 'cohort'){
             $cohortid = $this->enrol->customint1;
+            preg_match('/\((.*?)\)/', $data->enroltitle, $match);
+            $data->enroltitle = $match[1];
+
         }else if($this->enrol->enrol == 'gwpayments'){
             $cohortid = $this->enrol->customint5;
             $data->enrolid = $this->enrol->id;
@@ -161,6 +164,13 @@ class subscription_list_item implements \renderable, \templatable {
         $data->canresubscribe = $canresubscribe;
         $data->canselfenrol = $canselfenrol;
         $data->canupgrade = $canupgrade;
+        $data->itemid = 1;
+        $data->componentname = 'local_subscriptions';
+        $data->area = 'main';
+        $data->price = '100';
+        $data->expirationdate = $this->enrol->timeend;
+        $data->itemname = 'sakahjdadh';
+        
         return $data;
     }
     
