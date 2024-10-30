@@ -17,6 +17,7 @@
 namespace block_subscriptions\output;
 
 require_once($CFG->dirroot . '/local/subscriptions/lib.php');
+require_once($CFG->dirroot . '/local/subscriptions/locallib.php');
 require_once($CFG->dirroot . '/cohort/lib.php');
 use core\event\user_loggedin;
 use core_cohort\reportbuilder\local\entities\cohort_member;
@@ -166,11 +167,31 @@ class subscription_list_item implements \renderable, \templatable {
         $data->canupgrade = $canupgrade;
         $data->itemid = $data->enrolid;
 
+        
         $data->componentname = 'local_subscriptions';
         $data->area = 'enrol';
         $data->price = $data->enrolcost;
         $data->expirationdate = $this->enrol->timeend;
         $data->itemname = $data->enroltitle;
+        $data->hasbundles = false;
+        $data->bundles = [];
+        if($bundles = get_bundles_from_bundleiteminstance($this->enrol->id, 'enrol')){
+            foreach($bundles as $bundle) {
+                
+                $bundle->canbuy = can_user_buy_bundle($bundle->id, $USER->id);
+                $bundle->items = array_values(get_bundleitems_from_bundle($bundle->id));
+                $bundle->totalcost = reset($bundle->items)->totalcost;
+                $bundle->afterdiscount = reset($bundle->items)->totalcost - $bundle->discount;
+
+                $bundle->itemid = $bundle->id;
+                $bundle->componentname = 'local_subscriptions';
+                $bundle->area = 'bundle';
+                $bundle->price = -$bundle->discount;
+                $bundle->itemname = $bundle->name;
+                $data->bundles[]=  $bundle;
+            }
+            $data->hasbundles = true;
+        };
         
         return $data;
     }

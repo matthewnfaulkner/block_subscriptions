@@ -1,0 +1,51 @@
+
+<h5 class="text-primary d-flex align-items-center flex-wrap">
+    <a class="shadow-none text-accent d-inline-flex ml-2 text-decoration-none" 
+        data-toggle="collapse" 
+        href="#collapse{{itemid}}" 
+        role="button" 
+        aria-expanded="false" 
+        aria-controls="multiCollapseExample1">
+        {{#str}}availablebundles, local_subscriptions{{/str}}
+    </a>
+</h5>
+<div class="collapse multi-collapse" id="collapse{{itemid}}">
+    <div class="card card-body text-primary">
+        {{#bundles}}
+            <table class="table">
+                <thead>
+                    <tr>
+                    <th scope="col">{{name}}</th>
+                    <th scope="col">Cost</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#items}}
+                        <tr>
+                        <td>{{name}}</td>
+                        <td>{{currency}} {{cost}}</td>
+                        </tr>
+                    {{/items}}
+                </tbody>
+                <tr class="table-success">
+                    <td>Total</td>
+                    <td>{{currency}} {{totalcost}}</td>
+                </tr>
+                <tr class="table-danger">
+                    <td>Discount</td>
+                    <td> - {{currency}} {{discount}}</td>
+                </tr>
+                <tr class="table-primary">
+                    <td>Price after Discount</td>
+                    <td>{{currency}} {{totalcost}}</td>
+                </tr>
+                </table>
+                {{#canbuy}}
+                    {{> local_shopping_cart/addtocartdb }}
+                {{/canbuy}}
+                {{^canbuy}}
+                    {{#str}}cantbuybundle, local_subscriptions{{/str}}
+                {{/canbuy}}
+        {{/bundles}}
+    </div>
+</div>

@@ -33,6 +33,9 @@
                 });
             {{/js}}
             {{> local_shopping_cart/addtocartdb }}
+            {{#hasbundles}}
+                {{> block_subscriptions/bundles }}
+            {{/hasbundles}}
         {{/gwpayments}}
         {{^gwpayments}}
             <a class="btn btn-primary action-subscribe-{{subscriptionid}}" href="{{{enrollink}}}">
