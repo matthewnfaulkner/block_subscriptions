@@ -167,7 +167,7 @@ class subscription_list_item implements \renderable, \templatable {
         $data->itemid = $data->enrolid;
 
         $data->componentname = 'local_subscriptions';
-        $data->area = 'option';
+        $data->area = 'enrol';
         $data->price = $data->enrolcost;
         $data->expirationdate = $this->enrol->timeend;
         $data->itemname = $data->enroltitle;
