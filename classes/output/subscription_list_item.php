@@ -178,8 +178,18 @@ class subscription_list_item implements \renderable, \templatable {
         if($bundles = get_bundles_from_bundleiteminstance($this->enrol->id, 'enrol')){
             foreach($bundles as $bundle) {
                 
-                $bundle->canbuy = can_user_buy_bundle($bundle->id, $USER->id);
+                $bundle->cannotbuy = user_cannot_buy_bundle($bundle->id, $USER->id);
+
+                $bundleitems = get_bundleitems_from_bundle($bundle->id);
                 $bundle->items = array_values(get_bundleitems_from_bundle($bundle->id));
+
+                if($bundle->cannotbuy) {
+                    foreach($bundle->cannotbuy as $itemid => $ineligibleitem) {
+                        $bundleitems[$itemid]->ineligibleitem = true;
+                    }
+                }
+
+                $bundle->items = array_values($bundleitems);
                 $bundle->totalcost = reset($bundle->items)->totalcost;
                 $bundle->afterdiscount = reset($bundle->items)->totalcost - $bundle->discount;
 

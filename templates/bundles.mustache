@@ -1,14 +1,16 @@
 
-<h5 class="text-primary d-flex align-items-center flex-wrap">
-    <a class="shadow-none text-accent d-inline-flex ml-2 text-decoration-none" 
+<h6 class="text-accent d-flex align-items-center flex-wrap">
+        {{#str}}availablebundles, local_subscriptions{{/str}}
+    
+</h6>
+<a class="shadow-none text-accent d-inline-flex ml-2 text-decoration-none" 
         data-toggle="collapse" 
         href="#collapse{{itemid}}" 
         role="button" 
         aria-expanded="false" 
         aria-controls="multiCollapseExample1">
-        {{#str}}availablebundles, local_subscriptions{{/str}}
+        {{#str}}clicktoviewbundles, local_subscriptions{{/str}}
     </a>
-</h5>
 <div class="collapse multi-collapse" id="collapse{{itemid}}">
     <div class="card card-body text-primary">
         {{#bundles}}
@@ -21,9 +23,9 @@
                 </thead>
                 <tbody>
                     {{#items}}
-                        <tr>
+                        <tr {{#ineligibleitem}}class="text-muted"{{/ineligibleitem}}> 
                         <td>{{name}}</td>
-                        <td>{{currency}} {{cost}}</td>
+                        <td>{{#ineligibleitem}}Ineligible{{/ineligibleitem}}{{^ineligibleitem}}{{currency}} {{cost}}{{/ineligibleitem}}</td>
                         </tr>
                     {{/items}}
                 </tbody>
@@ -44,7 +46,9 @@
                     {{> local_shopping_cart/addtocartdb }}
                 {{/canbuy}}
                 {{^canbuy}}
-                    {{#str}}cantbuybundle, local_subscriptions{{/str}}
+                    <a class="btn btn-dark disabled">
+                        {{#str}}cantbuybundle, local_subscriptions{{/str}}
+                    </a>                
                 {{/canbuy}}
         {{/bundles}}
     </div>

@@ -51,17 +51,18 @@
                             <a class="btn btn-success disabled">
                                 {{#str}}alreadyenrolled, block_subscriptions{{/str}}
                             </a>
-                            {{#canselfenrol}}
-                                {{#canresubscribe}}
-                                    {{> block_subscriptions/enrol_buttons}}
-                                {{/canresubscribe}}
-                            {{/canselfenrol}}
                             {{#unenrollink}}
                                 <a class="btn btn-outline-accent action-cancel-{{subscriptionid}}"
                                     href="{{{unenrollink}}}">
                                     {{#str}}cancelsubscription, block_subscriptions{{/str}}
                                 </a>
                             {{/unenrollink}}
+                            {{#canselfenrol}}
+                                {{#canresubscribe}}
+                                    {{> block_subscriptions/enrol_buttons}}
+                                {{/canresubscribe}}
+                            {{/canselfenrol}}
+                            
                         {{/isexpired}}
                         {{#isexpired}}
                             <a class="btn btn-danger disabled">

@@ -1,3 +1,4 @@
+<div class="p-3">
 {{#hasmainsubscription}}
     {{#iscohortmember}}
         {{#gwpayments}}
@@ -14,12 +15,12 @@
                     {{/canresubscribe}}
                 {{/isexpired}}
                 {{#isexpired}}
-                    <h5> {{# str }} sendpaymentbutton, enrol_gwpayments {{/ str }} </h5>
+                    <h5> {{# str }} purchasesubscription, block_subscriptions {{/ str }} </h5>
                     {{< block_subscriptions/payment_button}} {{/block_subscriptions/payment_button}}
                 {{/isexpired}}
             {{/enrolledincourse}}
             {{^enrolledincourse}}
-                <h5> {{# str }} sendpaymentbutton, enrol_gwpayments {{/ str }} </h5>
+                <h5> {{# str }} purchasesubscription, block_subscriptions {{/ str }} </h5>
                 {{< block_subscriptions/payment_button}}  {{/block_subscriptions/payment_button}}
             {{/enrolledincourse}}
             {{#js}}
@@ -54,3 +55,4 @@
             {{#str}}enrollmentunavailablenomain, block_subscriptions, {{/str}}
     </a>
 {{/hasmainsubscription}}
+</div>
