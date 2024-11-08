@@ -54,5 +54,8 @@
     <a class="btn btn-dark disabled">
             {{#str}}enrollmentunavailablenomain, block_subscriptions, {{/str}}
     </a>
+    {{#hasbundles}}
+                {{> block_subscriptions/bundles }}
+    {{/hasbundles}}
 {{/hasmainsubscription}}
 </div>
