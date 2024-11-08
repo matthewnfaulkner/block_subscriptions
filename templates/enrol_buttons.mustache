@@ -48,6 +48,9 @@
         <a class="btn btn-dark disabled">
             {{#str}}enrollmentunavailable, block_subscriptions, {{/str}}
         </a>
+        {{#hasbundles}}
+                {{> block_subscriptions/bundles }}
+        {{/hasbundles}}
     {{/iscohortmember}}
 {{/hasmainsubscription}}
 {{^hasmainsubscription}}
