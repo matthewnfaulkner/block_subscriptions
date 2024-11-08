@@ -42,14 +42,14 @@
                     <td>{{currency}} {{totalcost}}</td>
                 </tr>
                 </table>
-                {{#canbuy}}
+                {{^cannotbuy}}
                     {{> local_shopping_cart/addtocartdb }}
-                {{/canbuy}}
-                {{^canbuy}}
+                {{/cannotbuy}}
+                {{#cannotbuy}}
                     <a class="btn btn-dark disabled">
                         {{#str}}cantbuybundle, local_subscriptions{{/str}}
                     </a>                
-                {{/canbuy}}
+                {{/cannotbuy}}
         {{/bundles}}
     </div>
 </div>
