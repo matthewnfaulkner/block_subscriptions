@@ -5,15 +5,15 @@
         <div class="col">
             <p class="p-0 text-primary">
                 {{#enrolhascost}}
-                 {{#str}}price, block_subscriptions {{/str}}
-                 {{#enrolcost}}
-                     <span class="text-accent font-weight-bold">{{enrolcost}}</span>
-                 {{/enrolcost}}
-                 {{^enrolcost}}
-                     <span class="text-accent font-weight-bold">
-                        {{#str}}nocost, block_subscriptions{{/str}}
-                     </span>
-                 {{/enrolcost}}
+                    {{#str}}price, block_subscriptions {{/str}}
+                    {{#enrolcost}}
+                        <span class="text-accent font-weight-bold">{{enrolcost}}</span>
+                    {{/enrolcost}}
+                    {{^enrolcost}}
+                        <span class="text-accent font-weight-bold">
+                            {{#str}}nocost, block_subscriptions{{/str}}
+                        </span>
+                    {{/enrolcost}}
                  {{/enrolhascost}}
             </p>
             {{#enrolperiod}}
