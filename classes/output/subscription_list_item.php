@@ -54,7 +54,7 @@ class subscription_list_item implements \renderable, \templatable {
  
     public function export_for_template(\renderer_base $output){
 
-        global $USER;
+        global $USER, $CFG;
         $data = new stdClass();
 
         $plugin = enrol_get_plugin($this->enrol->enrol);
@@ -166,7 +166,7 @@ class subscription_list_item implements \renderable, \templatable {
         $data->canselfenrol = $canselfenrol;
         $data->canupgrade = $canupgrade;
         $data->itemid = $data->enrolid;
-
+        $data->loginlink = new moodle_url('/login/index.php', array('wantsurl' => $CFG->wwwroot . '/local/subscriptions/index.php'));
         
         $data->componentname = 'local_subscriptions';
         $data->area = 'enrol';

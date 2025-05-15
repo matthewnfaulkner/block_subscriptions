@@ -99,7 +99,7 @@
                 {{/enrolledincourse}}
             {{/isloggedin}}
             {{^isloggedin}}
-                <a class="btn btn-dark disabled">
+                <a href="{{{loginlink}}}" class="btn btn-accent">
                             {{#str}}notloggedin, block_subscriptions, {{/str}}
                         </a>
             {{/isloggedin}}
