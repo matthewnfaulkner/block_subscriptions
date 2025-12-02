@@ -177,7 +177,9 @@ class subscription_list_item implements \renderable, \templatable {
         $data->bundles = [];
         if($bundles = get_bundles_from_bundleiteminstance($this->enrol->id, 'enrol')){
             foreach($bundles as $bundle) {
-                
+                if($bundle->status) {
+                    continue;
+                }
                 $bundle->cannotbuy = user_cannot_buy_bundle($bundle->id, $USER->id);
 
                 $bundleitems = get_bundleitems_from_bundle($bundle->id);
