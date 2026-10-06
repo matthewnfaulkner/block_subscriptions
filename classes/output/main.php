@@ -115,7 +115,8 @@ class main implements renderable, templatable{
             $enrollist = block_subscriptions_course_get_subscriptions($this->course);
         }
         
-        $enrolmentend = enrol_get_enrolment_end($this->course, $this->userid);
+        // Ignores cohort sync enrolments, which do not stop the user buying a subscription.
+        $enrolmentend = block_subscriptions_get_enrolment_end($this->course, $this->userid);
 
         foreach ($enrollist as $enrol){
             $enrollistitem = new subscription_list_item($enrol, $this->enrolledincourse, $this->loggedin, $enrolmentend);

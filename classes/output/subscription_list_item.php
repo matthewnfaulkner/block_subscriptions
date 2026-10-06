@@ -40,11 +40,12 @@ class subscription_list_item implements \renderable, \templatable {
 
     private bool $loggedin;
 
-    private int $enrolmentend;
+    /** @var int|false End of the user's subscription (ignoring cohort sync), false for none, 0 for never. */
+    private int|false $enrolmentend;
 
     protected \core_course_list_element $courselistelement;
 
-    public function __construct(\stdClass $enrol, bool &$enrolledincourse, bool $loggedin, int $enrolmentend) {
+    public function __construct(\stdClass $enrol, bool &$enrolledincourse, bool $loggedin, int|false $enrolmentend) {
         $this->enrol = $enrol;
         $this->enrolledincourse = &$enrolledincourse;
         $this->loggedin = $loggedin;
@@ -141,6 +142,13 @@ class subscription_list_item implements \renderable, \templatable {
             }else{
                 $isenrolled = $this->enrol->timeend == 0 && $isenrolled;
             }
+        }
+
+        // Enrolled only by cohort sync (e.g. a federation member): that is not a subscription, so
+        // they can buy any subscription to upgrade. The cohort enrolment itself still shows as active.
+        if($this->enrolmentend === false && $this->enrol->enrol !== 'cohort'){
+            $canupgrade = true;
+            $isenrolled = false;
         }
         
         
