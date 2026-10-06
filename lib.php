@@ -27,6 +27,68 @@ function block_subscriptions_get_user_subscriptions($userid, $courseid){
     }
 }
 
+/**
+ * End of the user's current active subscription in the course, like enrol_get_enrolment_end(),
+ * but ignoring cohort sync enrolments (e.g. federation membership): those do not stop the
+ * user buying a subscription.
+ *
+ * @param int $courseid
+ * @param int $userid
+ * @return int|bool timestamp when active enrolment ends, false means no active enrolment now, 0 means never
+ */
+function block_subscriptions_get_enrolment_end($courseid, $userid) {
+    global $DB;
+
+    $sql = "SELECT ue.id, ue.timestart, ue.timeend
+              FROM {user_enrolments} ue
+              JOIN {enrol} e ON e.id = ue.enrolid AND e.courseid = :courseid
+              JOIN {user} u ON u.id = ue.userid
+             WHERE ue.userid = :userid AND ue.status = :active AND e.status = :enabled AND u.deleted = 0
+               AND e.enrol <> 'cohort'";
+    $params = ['enabled' => ENROL_INSTANCE_ENABLED, 'active' => ENROL_USER_ACTIVE,
+        'userid' => $userid, 'courseid' => $courseid];
+
+    if (!$enrolments = $DB->get_records_sql($sql, $params)) {
+        return false;
+    }
+
+    // As enrol_get_enrolment_end(): count overlapping enrolments over time and find when the
+    // count, active now, next drops to zero.
+    $changes = [];
+    foreach ($enrolments as $ue) {
+        $start = (int) $ue->timestart;
+        $end = (int) $ue->timeend;
+        if ($end != 0 && $end < $start) {
+            continue;
+        }
+        $changes[$start] = ($changes[$start] ?? 0) + 1;
+        if ($end !== 0) {
+            $changes[$end] = ($changes[$end] ?? 0) - 1;
+        }
+    }
+    ksort($changes);
+
+    $now = time();
+    $current = 0;
+    $present = null;
+    foreach ($changes as $time => $change) {
+        if ($time > $now) {
+            if ($present === null) {
+                $present = $current;
+                if ($present < 1) {
+                    return false;
+                }
+            }
+            if ($current + $change < 1) {
+                return $time;
+            }
+        }
+        $current += $change;
+    }
+
+    return $current > 0 ? 0 : false;
+}
+
 function block_subscriptions_course_get_subscriptions($courseid){
     global $DB;
     $enrolplugins = enrol_get_plugins(true);

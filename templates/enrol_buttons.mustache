@@ -5,8 +5,11 @@
         
             {{#enrolledincourse}}
                 {{#canupgrade}}
-                    <h5> {{# str }} upgradesubscription, block_subscriptions {{/ str }} </h5>
-                    {{< block_subscriptions/payment_button}}  {{/block_subscriptions/payment_button}}
+                    {{! An expired subscription gets the purchase button below instead. }}
+                    {{^isexpired}}
+                        <h5> {{# str }} upgradesubscription, block_subscriptions {{/ str }} </h5>
+                        {{< block_subscriptions/payment_button}}  {{/block_subscriptions/payment_button}}
+                    {{/isexpired}}
                 {{/canupgrade}}
                 {{^isexpired}}
                     {{#canresubscribe}}
