@@ -25,7 +25,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'block_subscriptions';
-$plugin->release = '0.1.0';
-$plugin->version = 2023063010;
-$plugin->requires = 2021051700;
+$plugin->release = '0.2.0';
+$plugin->version = 2026100900;
+$plugin->requires = 2024100700;
+$plugin->supported = [405, 503];
 $plugin->maturity = MATURITY_ALPHA;

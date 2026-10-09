@@ -7,10 +7,10 @@
                 {{#enrolhascost}}
                     {{#str}}price, block_subscriptions {{/str}}
                     {{#enrolcost}}
-                        <span class="text-accent font-weight-bold">{{enrolcost}}</span>
+                        <span class="text-accent fw-bold">{{enrolcost}}</span>
                     {{/enrolcost}}
                     {{^enrolcost}}
-                        <span class="text-accent font-weight-bold">
+                        <span class="text-accent fw-bold">
                             {{#str}}nocost, block_subscriptions{{/str}}
                         </span>
                     {{/enrolcost}}
@@ -19,12 +19,12 @@
             {{#enrolperiod}}
                  <p class="p-0 text-primary">
                     {{#str}}enrolperiod, block_subscriptions, {"period" :  {{#quote}}{{enrolperiod}}{{/quote}} }{{/str}}
-                    <span class="text-accent font-weight-bold">{{enrolperiod}}</span>
+                    <span class="text-accent fw-bold">{{enrolperiod}}</span>
                 </p>
                 {{#enrolstartdate}}
                 <p class="p-0 text-primary">
                     {{#str}}startdate, block_subscriptions{{/str}}
-                    <span class="text-accent font-weight-bold">
+                    <span class="text-accent fw-bold">
                         {{#userdate}}{{enrolstartdate}}, {{#str}} strftimedate, core_langconfig {{/str}}{{/userdate}}
                     </span>
                 </p>
@@ -32,7 +32,7 @@
                 {{#enrolenddate}}
                 <p class="p-0 text-primary">
                     {{#str}}enddate, block_subscriptions{{/str}}
-                    <span class="text-accent font-weight-bold">
+                    <span class="text-accent fw-bold">
                          {{#userdate}}{{enrolenddate}}, {{#str}} strftimedate, core_langconfig {{/str}}{{/userdate}}
                     </span>
                 </p>
@@ -42,7 +42,7 @@
         <div class="col">
             <p class="p-0 text-primary">
                 {{#str}}membershipcategories, block_subscriptions{{/str}}
-                <span class="text-accent font-weight-bold">{{formembershipcategories}}</span>
+                <span class="text-accent fw-bold">{{formembershipcategories}}</span>
             </p>
             {{#isloggedin}}
                 {{#enrolledincourse}}
