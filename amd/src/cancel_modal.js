@@ -24,9 +24,9 @@
  * @since      3.9
  */
 
-define(['jquery', 'core/str', 'core/modal_factory',
+define(['jquery', 'core/str', 'core/modal',
         'core/ajax', 'core/fragment', 'core/notification'],
-        function($, Str, ModalFactory, ajax, Fragment, Notification) {
+        function($, Str, Modal, ajax, Fragment, Notification) {
 
     /**
      * Module level variables.
@@ -51,13 +51,12 @@ define(['jquery', 'core/str', 'core/modal_factory',
         // Get the Title String.
         Str.get_string('loading').then(function(title) {
             // Create the Modal.
-            ModalFactory.create({
-                type: ModalFactory.types.DEFAULT,
+            Modal.create({
                 title: title,
                 body: spinner,
                 large: true
             })
-            .done(function(modal) {
+            .then(function(modal) {
                 modalObj = modal;
                 // Explicitly handle form click events.
                 modalObj.getRoot().on('click', '#id_submit', function(e) {
