@@ -8,29 +8,25 @@
                     {{! An expired subscription gets the purchase button below instead. }}
                     {{^isexpired}}
                         <h5> {{# str }} upgradesubscription, block_subscriptions {{/ str }} </h5>
-                        {{< block_subscriptions/payment_button}}  {{/block_subscriptions/payment_button}}
                     {{/isexpired}}
                 {{/canupgrade}}
                 {{^isexpired}}
                     {{#canresubscribe}}
                         <h5> {{# str }} renewsubscription, block_subscriptions {{/ str }} </h5>
-                        {{< block_subscriptions/payment_button}}  {{/block_subscriptions/payment_button}}
                     {{/canresubscribe}}
                 {{/isexpired}}
                 {{#isexpired}}
-                    <h5> {{# str }} purchasesubscription, block_subscriptions {{/ str }} </h5>
-                    {{< block_subscriptions/payment_button}} {{/block_subscriptions/payment_button}}
+                    <h5> {{# str }} renewsubscription, block_subscriptions {{/ str }} </h5>
                 {{/isexpired}}
             {{/enrolledincourse}}
             {{^enrolledincourse}}
-                <h5> {{# str }} purchasesubscription, block_subscriptions {{/ str }} </h5>
-                {{< block_subscriptions/payment_button}}  {{/block_subscriptions/payment_button}}
+                {{#isexpired}}
+                    <h5> {{# str }} renewsubscription, block_subscriptions {{/ str }} </h5>
+                {{/isexpired}}
+                {{^isexpired}}
+                    <h5> {{# str }} purchasesubscription, block_subscriptions {{/ str }} </h5>
+                {{/isexpired}}
             {{/enrolledincourse}}
-            {{#js}}
-                require(['core_payment/gateways_modal'], function(modal) {
-                    modal.init();
-                });
-            {{/js}}
             {{> local_shopping_cart/addtocartdb }}
             {{#hasbundles}}
                 {{> block_subscriptions/bundles }}
